@@ -1,7 +1,6 @@
 ## Usage
 
-Welcome to Pickers
-To use this plugin, add `pickers` as a [dependency in your pubspec.yaml file](https://flutter.dev/platform-plugins/).
+Welcome to Pickers, to use this plugin, add `pickers` as a [dependency in your pubspec.yaml file](https://flutter.dev/platform-plugins/).
 
 ### Example
 
@@ -19,6 +18,7 @@ GestureDetector(
         String time = Mixins.dateFormat(dateTime, format: 'HH:mm') // 10:30
     },
 )
+```
 
 ### iOS
 

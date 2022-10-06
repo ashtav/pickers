@@ -1,7 +1,8 @@
+import 'dart:html';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
-import 'package:media_gallery/media_gallery.dart';
 import 'package:mixins/mixins.dart';
 import 'package:pickers/src/constant_picker.dart';
 
@@ -40,15 +41,11 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future capture() async {
     try {
-      final XFile? path = await controller?.takePicture();
+      final XFile? xfile = await controller?.takePicture();
 
-      if (path != null) {
-        Media media = Media.fromJson({
-          'id': '__ALL__',
-          'mediaType': MediaType.image,
-        });
+      if (xfile != null) {
+        File file = File([xfile.path], 'image/jpeg');
       }
-      clog(path);
     } catch (_) {}
   }
 

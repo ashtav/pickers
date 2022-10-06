@@ -14,10 +14,15 @@ import 'cupertino_datepicker.dart';
 import 'cupertino_timepicker.dart';
 
 class PickersSelection {
-  final MediaPickerSelection? fromGallery;
-  final File? fromCamera;
+  MediaPickerSelection? gallery;
+  File? camera;
 
-  const PickersSelection({this.fromGallery, this.fromCamera});
+  PickersSelection({this.gallery, this.camera});
+
+  PickersSelection.fromJson(Map<String, dynamic> json) {
+    gallery = json['gallery'];
+    camera = json['camera'];
+  }
 }
 
 class Pickers {
@@ -114,9 +119,7 @@ class Pickers {
             ], maxItems: maxImages, selectedMedias: selectedMedias),
           ));
 
-      clog(res);
-
-      // return res;
+      result = PickersSelection.fromJson(res);
     }
 
     return result;
