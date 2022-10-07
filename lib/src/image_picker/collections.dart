@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:media_gallery/media_gallery.dart';
@@ -34,14 +36,16 @@ class _MediaCollectionsPageState extends State<MediaCollectionsPage> with Ticker
         collections = [];
       });
 
-      List list = await MediaGallery.listMediaCollections(
-        mediaTypes: selection.mediaTypes,
-      );
+      await Future.delayed(const Duration(milliseconds: 50), () async {
+        List list = await MediaGallery.listMediaCollections(
+          mediaTypes: selection.mediaTypes,
+        );
 
-      collections = list.cast<MediaCollection>();
-      isLoading = false;
+        collections = list.cast<MediaCollection>();
+        isLoading = false;
 
-      setState(() {});
+        setState(() {});
+      });
     } catch (_) {}
   }
 
