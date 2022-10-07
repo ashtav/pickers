@@ -31,10 +31,16 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    Mixins.statusBar();
+
     return Scaffold(
       appBar: AppBar(
-        elevation: 1,
-        title: Text(widget.title),
+        backgroundColor: Colors.white,
+        elevation: .5,
+        title: Text(
+          widget.title,
+          style: const TextStyle(color: Colors.black54),
+        ),
       ),
       body: Center(
         child: Column(
