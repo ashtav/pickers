@@ -29,6 +29,11 @@ class _MediaCollectionsPageState extends State<MediaCollectionsPage> with Ticker
     final selection = MediaPickerSelection.of(context);
 
     try {
+      setState(() {
+        isLoading = true;
+        collections = [];
+      });
+
       List list = await MediaGallery.listMediaCollections(
         mediaTypes: selection.mediaTypes,
       );
@@ -42,19 +47,23 @@ class _MediaCollectionsPageState extends State<MediaCollectionsPage> with Ticker
 
   void openCamera() async {
     PermissionStatus status = await Permission.camera.request();
-    clog(status);
 
     if (status.isGranted) {
       if (!mounted) return;
 
-      final result = await Navigator.push(
+      final file = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => const CameraScreen(),
         ),
       );
 
-      clog(result);
+      if (file != null && mounted) {
+        initGallery();
+        // Navigator.pop(context, {
+        //   'camera': file,
+        // });
+      }
     }
   }
 
@@ -100,31 +109,33 @@ class _MediaCollectionsPageState extends State<MediaCollectionsPage> with Ticker
             Column(
               children: [
                 const SizedBox(
-                  height: 44,
+                  height: 48,
                 ),
                 Expanded(
-                  child: TabBarView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: selection.tabController,
-                    children: [
-                      ...selection.mediaTypes.map(
-                        (e) => allCollection == null
-                            ? const SizedBox()
-                            : MediaGrid(
-                                key: Key(e.toString()),
-                                collection: allCollection,
-                                mediaType: e,
-                              ),
-                      ),
-                      MediaAlbums(
-                        collections: collections
-                            .where(
-                              (e) => !e.isAllCollection,
-                            )
-                            .toList(),
-                      ),
-                    ],
-                  ),
+                  child: isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : TabBarView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          controller: selection.tabController,
+                          children: [
+                            ...selection.mediaTypes.map(
+                              (e) => allCollection == null
+                                  ? const SizedBox()
+                                  : MediaGrid(
+                                      key: Key(e.toString()),
+                                      collection: allCollection,
+                                      mediaType: e,
+                                    ),
+                            ),
+                            MediaAlbums(
+                              collections: collections
+                                  .where(
+                                    (e) => !e.isAllCollection,
+                                  )
+                                  .toList(),
+                            ),
+                          ],
+                        ),
                 ),
               ],
             ),
@@ -134,9 +145,7 @@ class _MediaCollectionsPageState extends State<MediaCollectionsPage> with Ticker
                     alignment: Alignment.bottomCenter,
                     child: PickerValidateButton(
                       onValidate: (MediaPickerSelection selection) => {
-                        Navigator.pop(context, {
-                          'gallery': selection.selectedMedias,
-                        }),
+                        Navigator.pop(context, selection.selectedMedias),
                       },
                     ))),
           ],
@@ -152,15 +161,6 @@ class NavbarImagePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selection = MediaPickerSelection.of(context);
-
-    // ...selection.mediaTypes.map(
-    //         (x) => Tab(
-    //           text: x == MediaType.video ? labels.videos : labels.images,
-    //         ),
-    //       ),
-    //       Tab(
-    //         text: labels.albums,
-    //       ),
 
     return Align(
       alignment: Alignment.topCenter,
@@ -179,7 +179,7 @@ class NavbarImagePicker extends StatelessWidget {
           child: AnimatedBuilder(
             animation: selection,
             builder: (context, _) => Intrinsic(
-              children: List.generate(3, (i) {
+              children: List.generate(2, (i) {
                 List<IconData> icons = [Ti.grid_dots, Ti.layout_list, Ti.photo];
                 int selectionIndex = selection.tabController?.index ?? 0;
 

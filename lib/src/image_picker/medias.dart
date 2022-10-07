@@ -1,6 +1,11 @@
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:media_gallery/media_gallery.dart';
 import 'package:mixins/mixins.dart';
+import 'package:pickers/src/constant_picker.dart';
 
 import 'labels.dart';
 import 'selectable.dart';
@@ -28,7 +33,18 @@ class _MediaImagesPageState extends State<MediasPage> {
       length: selection.mediaTypes.length,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.collection.name),
+          backgroundColor: Colors.white,
+          leading: IconButton(
+            icon: const Icon(Ti.chevron_left, color: Colors.black54),
+            onPressed: () => Navigator.pop(context),
+          ),
+          elevation: .5,
+
+          title: Text(
+            widget.collection.name,
+            style: PickerConstant.style.copyWith(fontSize: 20, color: Colors.black54),
+          ),
+
           // actions: <Widget>[
           //   PickerValidateButton(
           //     onValidate: (selection) => Navigator.pop(context, selection),
@@ -66,9 +82,7 @@ class _MediaImagesPageState extends State<MediasPage> {
             Positioned.fill(
                 child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: PickerValidateButton(
-                      onValidate: (MediaPickerSelection selection) => {},
-                    ))),
+                    child: PickerValidateButton(onValidate: (MediaPickerSelection selection) => Navigator.pop(context, selection.selectedMedias)))),
           ],
         ),
       ),
@@ -139,6 +153,36 @@ class _MediaGridState extends State<MediaGrid> with AutomaticKeepAliveClientMixi
     }
   }
 
+  Future previewImg(Media media) async {
+    File? file = await media.getFile();
+
+    if (file != null && mounted) {
+      Navigator.of(context).push(PageRouteBuilder(
+          opaque: false,
+          transitionDuration: const Duration(milliseconds: 300),
+          barrierDismissible: true,
+          // transitionsBuilder: (context, a1, a2, widget) {
+          //   return Transform.scale(
+          //     scale: a1.value,
+          //     child: Opacity(
+          //       opacity: a1.value,
+          //       child: ImgPreviewWidget(file: file, tag: media.id),
+          //     ),
+          //   );
+          // },
+          pageBuilder: (BuildContext context, a1, a2) {
+            return Transform.scale(
+              scale: a1.value,
+              child: Opacity(
+                opacity: a1.value,
+                child: ImgPreviewWidget(file: file, tag: media.id),
+              ),
+            );
+            // return ImgPreviewWidget(file: file, tag: media.id);
+          }));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -153,37 +197,85 @@ class _MediaGridState extends State<MediaGrid> with AutomaticKeepAliveClientMixi
         }
         return false;
       },
-      child: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : GridView(
-              padding: Ei.all(0),
-              physics: BounceScroll(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                childAspectRatio: 1.0,
-              ),
-              children: <Widget>[
-                ...allMedias.map<Widget>(
-                  (e) => AnimatedBuilder(
-                    key: Key(e.id),
-                    animation: selection,
-                    builder: (context, _) => InkWell(
-                      onTap: () => selection.toggle(e),
-                      child: Selectable(
-                        isSelected: selection.contains(e),
-                        number: (selection.selectedMedias.indexWhere((m) => m.id == e.id) + 1),
-                        child: MediaThumbnailImage(
-                          media: e,
-                        ),
-                      ),
+      child: GridView(
+        padding: Ei.all(0),
+        physics: BounceScroll(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          childAspectRatio: 1.0,
+        ),
+        children: <Widget>[
+          ...allMedias.map<Widget>(
+            (e) => AnimatedBuilder(
+              key: Key(e.id),
+              animation: selection,
+              builder: (context, _) => InkWell(
+                onTap: () => selection.toggle(e),
+                onLongPress: () => previewImg(e),
+                child: Selectable(
+                  isSelected: selection.contains(e),
+                  number: (selection.selectedMedias.indexWhere((m) => m.id == e.id) + 1),
+                  child: Hero(
+                    tag: e.id,
+                    child: MediaThumbnailImage(
+                      media: e,
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
+          ),
+        ],
+      ),
     );
   }
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class ImgPreviewWidget extends StatelessWidget {
+  final File file;
+  final String tag;
+  const ImgPreviewWidget({super.key, required this.file, required this.tag});
+
+  @override
+  Widget build(BuildContext context) {
+    return BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: 5.0,
+          sigmaY: 5.0,
+        ),
+        child: CenterDialog(
+          child: Hero(
+            tag: tag,
+            child: Container(
+              constraints: BoxConstraints(
+                maxWidth: context.w > 350 ? 350 : context.w,
+                maxHeight: context.h * .8,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: Br.radius(5),
+              ),
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: ClipRRect(
+                    borderRadius: Br.radius(5),
+                    child: Image.file(
+                      file,
+                      fit: BoxFit.contain,
+                      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                        return AnimatedOpacity(
+                          opacity: frame == null ? 0 : 1,
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeOut,
+                          child: child,
+                        );
+                      },
+                    )),
+              ),
+            ),
+          ),
+        ));
+  }
 }

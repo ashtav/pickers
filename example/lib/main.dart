@@ -57,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 20),
             TextButton(
                 onPressed: () async {
-                  PickersSelection? images = await Pickers.imagePicker(context, maxImages: 5);
+                  List<Media>? images = await Pickers.imagePicker(context, maxImages: 5);
                   if (images != null) {}
                 },
                 child: const Text('Show Image Picker')),

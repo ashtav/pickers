@@ -13,18 +13,6 @@ import 'package:pickers/src/image_picker/selection.dart';
 import 'cupertino_datepicker.dart';
 import 'cupertino_timepicker.dart';
 
-class PickersSelection {
-  MediaPickerSelection? gallery;
-  File? camera;
-
-  PickersSelection({this.gallery, this.camera});
-
-  PickersSelection.fromJson(Map<String, dynamic> json) {
-    gallery = json['gallery'];
-    camera = json['camera'];
-  }
-}
-
 class Pickers {
   /* ------------------------------------------------------------
   | DATE PICKER
@@ -82,7 +70,7 @@ class Pickers {
   | IMAGE PICKER
   ------------------------------------ */
 
-  static Future<PickersSelection?> imagePicker(BuildContext context,
+  static Future<List<Media>?> imagePicker(BuildContext context,
       {String? title, int maxImages = 1, MediaPickerLabels? labels, List<Media>? selectedMedias}) async {
     PermissionStatus mediaStatus = await Permission.photos.status;
 
@@ -105,10 +93,10 @@ class Pickers {
       );
     }
 
-    PickersSelection? result;
+    List<Media>? result;
 
     if (isGranted) {
-      final res = await AppNavigator.open(
+      result = await AppNavigator.open(
           context,
           MediaPicker(
             title: title,
@@ -118,8 +106,6 @@ class Pickers {
               // MediaType.video,
             ], maxItems: maxImages, selectedMedias: selectedMedias),
           ));
-
-      result = PickersSelection.fromJson(res);
     }
 
     return result;

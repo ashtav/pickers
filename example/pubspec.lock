@@ -149,6 +149,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  gallery_saver:
+    dependency: transitive
+    description:
+      name: gallery_saver
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.2"
   google_fonts:
     dependency: transitive
     description:

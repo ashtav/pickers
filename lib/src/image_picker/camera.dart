@@ -1,8 +1,10 @@
-import 'dart:html';
+import 'dart:io';
+import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:mixins/mixins.dart';
 import 'package:pickers/src/constant_picker.dart';
 
@@ -14,24 +16,28 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
+  CameraNotifier notifier = CameraNotifier(false);
+
   late List<CameraDescription> cameras;
   CameraController? controller;
 
   Future initCamera() async {
     try {
       cameras = await availableCameras();
-      controller = CameraController(cameras[0], ResolutionPreset.medium);
+      controller = CameraController(cameras[0], ResolutionPreset.veryHigh);
 
       controller?.initialize().then((_) {
+        controller?.setFlashMode(FlashMode.off);
+        controller?.setFocusMode(FocusMode.auto);
+        controller?.setExposureMode(ExposureMode.auto);
+
         setState(() {});
       }).catchError((Object e) {
         if (e is CameraException) {
           switch (e.code) {
             case 'CameraAccessDenied':
-              print('User denied camera access.');
               break;
             default:
-              print('Handle other errors.');
               break;
           }
         }
@@ -42,11 +48,32 @@ class _CameraScreenState extends State<CameraScreen> {
   Future capture() async {
     try {
       final XFile? xfile = await controller?.takePicture();
+      setFlashMode(false);
 
       if (xfile != null) {
-        File file = File([xfile.path], 'image/jpeg');
+        if (mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CameraCapturePreview(
+                file: xfile,
+              ),
+            ),
+          ).then((file) {
+            if (file != null) {
+              GallerySaver.saveImage(file.path).then((path) {
+                Navigator.pop(context, true);
+              });
+            }
+          });
+        }
       }
     } catch (_) {}
+  }
+
+  void setFlashMode(bool value) {
+    controller?.setFlashMode(value ? FlashMode.torch : FlashMode.off);
+    notifier.flash(value);
   }
 
   @override
@@ -63,15 +90,33 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Widget cameraWidget() {
+      var camera = controller!.value;
+      // fetch screen size
+      final size = MediaQuery.of(context).size;
+
+      // calculate scale depending on screen and camera ratios
+      // this is actually size.aspectRatio / (1 / camera.aspectRatio)
+      // because camera preview size is received as landscape
+      // but we're calculating for portrait orientation
+      var scale = size.aspectRatio * camera.aspectRatio;
+
+      // to prevent scaling down, invert the value
+      if (scale < 1) scale = 1 / scale;
+
+      return Transform.scale(
+          scale: scale,
+          child: Center(
+            child: CameraPreview(controller!),
+          ));
+    }
+
     return MaterialApp(
       home: controller?.value == null
           ? Container()
           : Stack(
               children: [
-                SizedBox(
-                  height: context.h,
-                  child: CameraPreview(controller!),
-                ),
+                cameraWidget(),
                 Positioned.fill(
                     child: Align(
                   alignment: Alignment.bottomCenter,
@@ -97,7 +142,17 @@ class _CameraScreenState extends State<CameraScreen> {
                               decoration: BoxDecoration(shape: BoxShape.circle, border: Br.all(Colors.black, width: 2)),
                             ),
                           ),
-                          const None()
+                          GestureDetector(
+                              onTap: () => setFlashMode(!notifier.isFlashMode),
+                              child: ValueListenableBuilder(
+                                  valueListenable: notifier,
+                                  builder: (context, _, __) {
+                                    return Iconr(
+                                      notifier.isFlashMode ? Ti.sun_off : Ti.sun,
+                                      color: Colors.white,
+                                      padding: Ei.all(15),
+                                    );
+                                  }))
                         ];
 
                         return Expanded(child: widgets[index]);
@@ -107,6 +162,86 @@ class _CameraScreenState extends State<CameraScreen> {
                 ))
               ],
             ),
+    );
+  }
+}
+
+class CameraNotifier extends ValueNotifier {
+  CameraNotifier(super.value);
+
+  bool isFlashMode = false;
+
+  void flash(bool value) {
+    isFlashMode = value;
+    notifyListeners();
+  }
+}
+
+class CameraCapturePreview extends StatelessWidget {
+  final XFile file;
+  const CameraCapturePreview({super.key, required this.file});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: FileImage(File(file.path)),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Positioned.fill(
+              child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    margin: Ei.only(b: 25),
+                    child: Intrinsic(
+                      children: List.generate(3, (index) {
+                        List<Widget> widgets = [
+                          const None(),
+                          Container(
+                            decoration: BoxDecoration(border: Br.all(Colors.white), borderRadius: Br.radius(25)),
+                            child: ClipRRect(
+                              borderRadius: Br.radius(25),
+                              child: InkW(
+                                onTap: () => Navigator.pop(context, File(file.path)),
+                                color: Colors.grey,
+                                padding: Ei.sym(v: 10, h: 25),
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(
+                                    sigmaX: 25.0,
+                                    sigmaY: 25.0,
+                                  ),
+                                  child: Text(
+                                    'Use Photo',
+                                    style: PickerConstant.style.copyWith(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: Iconr(
+                              Ti.refresh,
+                              color: Colors.white,
+                              padding: Ei.all(15),
+                            ),
+                          )
+                        ];
+
+                        return Expanded(
+                          child: Center(child: widgets[index]),
+                        );
+                      }),
+                    ),
+                  )))
+        ],
+      ),
     );
   }
 }
