@@ -24,6 +24,7 @@ class Pickers {
       DateTime? lastDate,
       String confirmLabel = 'Confirm',
       bool useShortMonths = false,
+      bool monthYearOnly = false,
       AlignmentGeometry? alignment}) async {
     if (firstDate != null && lastDate != null && firstDate.isAfter(lastDate)) {
       clog('[Pickers] - First date must be smaller than last date');
@@ -37,6 +38,7 @@ class Pickers {
             firstDate: firstDate,
             lastDate: lastDate,
             useShortMonths: useShortMonths,
+            monthYearOnly: monthYearOnly,
             alignment: alignment,
             confirmLabel: confirmLabel));
 

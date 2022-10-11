@@ -247,33 +247,30 @@ class ImgPreviewWidget extends StatelessWidget {
           sigmaY: 5.0,
         ),
         child: CenterDialog(
-          child: Hero(
-            tag: tag,
-            child: Container(
-              constraints: BoxConstraints(
-                maxWidth: context.w > 350 ? 350 : context.w,
-                maxHeight: context.h * .8,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: Br.radius(5),
-              ),
-              child: GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: ClipRRect(
-                    borderRadius: Br.radius(5),
-                    child: Image.file(
-                      file,
-                      fit: BoxFit.contain,
-                      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                        return AnimatedOpacity(
-                          opacity: frame == null ? 0 : 1,
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeOut,
-                          child: child,
-                        );
-                      },
-                    )),
-              ),
+          child: Container(
+            constraints: BoxConstraints(
+              maxWidth: context.w > 350 ? 350 : context.w,
+              maxHeight: context.h * .8,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: Br.radius(5),
+            ),
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: ClipRRect(
+                  borderRadius: Br.radius(5),
+                  child: Image.file(
+                    file,
+                    fit: BoxFit.contain,
+                    frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                      return AnimatedOpacity(
+                        opacity: frame == null ? 0 : 1,
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeOut,
+                        child: Hero(tag: tag, child: child),
+                      );
+                    },
+                  )),
             ),
           ),
         ));

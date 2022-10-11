@@ -1,10 +1,19 @@
 ## Usage
 
-Welcome to Pickers, to use this plugin, add `pickers` as a [dependency in your pubspec.yaml file](https://flutter.dev/platform-plugins/).
+Welcome to Pickers, to use this plugin, add `pickers` as a [dependency in your pubspec.yaml file](https://flutter.dev/platform-plugins/). 
+Or you can install it from github by adding the following to your pubspec.yaml file:
+
+```yaml
+dependencies:
+    pickers:
+        git:
+            url: https://github.com/ashtav/pickers.git
+            ref: master
+```
 
 ### Example
 
-```dart 
+```dart
 
 GestureDetector(
     onTap: () async {

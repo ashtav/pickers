@@ -9,7 +9,6 @@ import 'package:pickers/src/constant_picker.dart';
 import 'package:pickers/src/image_picker/camera.dart';
 
 import 'albums.dart';
-import 'labels.dart';
 import 'medias.dart';
 import 'selection.dart';
 import 'validate.dart';
@@ -80,7 +79,7 @@ class _MediaCollectionsPageState extends State<MediaCollectionsPage> with Ticker
   @override
   Widget build(BuildContext context) {
     final MediaPickerSelection selection = MediaPickerSelection.of(context);
-    final labels = MediaPickerLabels.of(context);
+    // final labels = MediaPickerLabels.of(context);
 
     selection.tabController = TabController(length: 2, vsync: this);
 

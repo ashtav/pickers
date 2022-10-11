@@ -10,10 +10,17 @@ class CupertinoDatePickerWidget extends StatelessWidget {
   final DateTime? firstDate;
   final DateTime? lastDate;
   final String? confirmLabel;
-  final bool useShortMonths;
+  final bool useShortMonths, monthYearOnly;
   final AlignmentGeometry? alignment;
   const CupertinoDatePickerWidget(
-      {super.key, this.initialDate, this.firstDate, this.lastDate, this.confirmLabel, this.useShortMonths = false, this.alignment});
+      {super.key,
+      this.initialDate,
+      this.firstDate,
+      this.lastDate,
+      this.confirmLabel,
+      this.useShortMonths = false,
+      this.monthYearOnly = false,
+      this.alignment});
 
   @override
   Widget build(BuildContext context) {
@@ -194,12 +201,16 @@ class CupertinoDatePickerWidget extends StatelessWidget {
             FutureBuilder(
               future: Future.delayed(const Duration(milliseconds: 0)),
               builder: (context, snapshot) {
+                List<String> types = ['date', 'month', 'year'];
+                if (monthYearOnly) types = ['month', 'year'];
+
                 return Center(
                   child: SizedBox(
                     height: context.h * 0.4,
                     child: Intrinsic(
                       children: List.generate(3, (t) {
-                        String value = ['date', 'month', 'year'][t];
+                        String value = types[t];
+
                         return Expanded(
                             child: Container(decoration: BoxDecoration(border: Br.only(['l'], except: t == 0)), child: cupertinoPickerWidget(value)));
                       }),
