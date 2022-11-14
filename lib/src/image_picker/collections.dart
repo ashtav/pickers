@@ -26,7 +26,6 @@ class _MediaCollectionsPageState extends State<MediaCollectionsPage> with Ticker
   bool isLoading = true;
 
   Future<void> initGallery() async {
-    Mixins.statusBar(); // Set status bar color
     final selection = MediaPickerSelection.of(context);
 
     try {
@@ -79,6 +78,7 @@ class _MediaCollectionsPageState extends State<MediaCollectionsPage> with Ticker
   @override
   Widget build(BuildContext context) {
     final MediaPickerSelection selection = MediaPickerSelection.of(context);
+    final int maxImages = selection.maxItems;
     // final labels = MediaPickerLabels.of(context);
 
     selection.tabController = TabController(length: 2, vsync: this);
@@ -111,9 +111,7 @@ class _MediaCollectionsPageState extends State<MediaCollectionsPage> with Ticker
           children: [
             Column(
               children: [
-                const SizedBox(
-                  height: 48,
-                ),
+                const NavbarImagePicker(),
                 Expanded(
                   child: isLoading
                       ? const Center(child: CircularProgressIndicator())
@@ -142,15 +140,16 @@ class _MediaCollectionsPageState extends State<MediaCollectionsPage> with Ticker
                 ),
               ],
             ),
-            const Positioned.fill(child: NavbarImagePicker()),
             Positioned.fill(
-                child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: PickerValidateButton(
-                      onValidate: (MediaPickerSelection selection) => {
-                        Navigator.pop(context, selection.selectedMedias),
-                      },
-                    ))),
+                child: maxImages <= 1
+                    ? const None()
+                    : Align(
+                        alignment: Alignment.bottomCenter,
+                        child: PickerValidateButton(
+                          onValidate: (MediaPickerSelection selection) => {
+                            Navigator.pop(context, selection.selectedMedias),
+                          },
+                        ))),
           ],
         ),
       ),
@@ -168,17 +167,7 @@ class NavbarImagePicker extends StatelessWidget {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.3),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
+          decoration: BoxDecoration(color: Colors.white, border: Br.only(['b'], width: .7)),
           child: AnimatedBuilder(
             animation: selection,
             builder: (context, _) => Intrinsic(

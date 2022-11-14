@@ -17,7 +17,7 @@ dependencies:
   media_gallery:
     git:
       url: https://github.com/ashtav/media_gallery.git
-  mixins: ^0.0.7
+  mixins: ^0.0.9
   permission_handler: ^10.1.0
   transparent_image: ^2.0.0
 

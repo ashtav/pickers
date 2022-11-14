@@ -33,6 +33,11 @@ class MediaPickerSelection extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clear() {
+    selectedMedias.clear();
+    notifyListeners();
+  }
+
   void toggle(Media media) {
     if (contains(media)) {
       remove(media);

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mixins/mixins.dart';
 import 'package:pickers/src/constant_picker.dart';
 
+import 'labels.dart';
 import 'selection.dart';
 
 class PickerValidateButton extends StatelessWidget {
@@ -17,13 +18,15 @@ class PickerValidateButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selection = MediaPickerSelection.of(context);
+    final labels = MediaPickerLabels.of(context);
+
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
       child: AnimatedBuilder(
         animation: selection,
         builder: (context, _) {
           return Container(
-            margin: Ei.only(b: 10),
+            margin: Ei.only(b: 15),
             decoration: BoxDecoration(border: Br.all(Colors.white), borderRadius: Br.radius(25)),
             child: ClipRRect(
               borderRadius: Br.radius(25),
@@ -37,7 +40,7 @@ class PickerValidateButton extends StatelessWidget {
                     sigmaY: 25.0,
                   ),
                   child: Text(
-                    ' (${selection.selectedMedias.length}) Confirm',
+                    ' (${selection.selectedMedias.length}) ${labels.textConfirm}',
                     style: PickerConstant.style.copyWith(color: Colors.white),
                   ),
                 ),

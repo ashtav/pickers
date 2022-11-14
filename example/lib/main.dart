@@ -4,6 +4,8 @@ import 'package:pickers/pickers.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Mixins.setSystemUI(navBarColor: Colors.white);
+
   runApp(const MyApp());
 }
 
@@ -56,15 +58,22 @@ class _MyHomePageState extends State<MyHomePage> {
             TextButton(
                 onPressed: () async {
                   DateTime? dateTime = await Pickers.timePicker(context);
-                  String time = Mixins.dateFormat(dateTime, format: 'HH:mm');
+                  String time = (dateTime ?? DateTime.now()).format('HH:mm');
                   clog(time);
                 },
                 child: const Text('Show Time Picker')),
             const SizedBox(height: 20),
             TextButton(
                 onPressed: () async {
-                  List<Media>? images = await Pickers.imagePicker(context, maxImages: 5);
-                  if (images != null) {}
+                  List<Media>? images = await Pickers.imagePicker(context,
+                      title: 'Pilih Gambar',
+                      maxImages: 5,
+                      labels: const MediaPickerLabels(
+                        textConfirm: 'Pilih',
+                      ));
+                  if (images != null) {
+                    logg(images);
+                  }
                 },
                 child: const Text('Show Image Picker')),
           ],

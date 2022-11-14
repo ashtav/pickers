@@ -7,7 +7,6 @@ import 'package:media_gallery/media_gallery.dart';
 import 'package:mixins/mixins.dart';
 import 'package:pickers/src/constant_picker.dart';
 
-import 'labels.dart';
 import 'selectable.dart';
 import 'selection.dart';
 import 'thumbnail.dart';
@@ -28,7 +27,8 @@ class _MediaImagesPageState extends State<MediasPage> {
   @override
   Widget build(BuildContext context) {
     final selection = MediaPickerSelection.of(context);
-    final labels = MediaPickerLabels.of(context);
+    final maxImages = selection.maxItems;
+
     return DefaultTabController(
       length: selection.mediaTypes.length,
       child: Scaffold(
@@ -50,17 +50,17 @@ class _MediaImagesPageState extends State<MediasPage> {
           //     onValidate: (selection) => Navigator.pop(context, selection),
           //   ),
           // ],
-          bottom: selection.mediaTypes.length > 1
-              ? TabBar(
-                  tabs: selection.mediaTypes
-                      .map(
-                        (x) => Tab(
-                          text: x == MediaType.video ? labels.videos : labels.images,
-                        ),
-                      )
-                      .toList(),
-                )
-              : null,
+          // bottom: selection.mediaTypes.length > 1
+          //     ? TabBar(
+          //         tabs: selection.mediaTypes
+          //             .map(
+          //               (x) => Tab(
+          //                 text: x == MediaType.video ? labels.videos : labels.images,
+          //               ),
+          //             )
+          //             .toList(),
+          //       )
+          //     : null,
         ),
         body: Stack(
           children: [
@@ -80,9 +80,12 @@ class _MediaImagesPageState extends State<MediasPage> {
               ),
             ]),
             Positioned.fill(
-                child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: PickerValidateButton(onValidate: (MediaPickerSelection selection) => Navigator.pop(context, selection.selectedMedias)))),
+                child: maxImages <= 1
+                    ? const None()
+                    : Align(
+                        alignment: Alignment.bottomCenter,
+                        child:
+                            PickerValidateButton(onValidate: (MediaPickerSelection selection) => Navigator.pop(context, selection.selectedMedias)))),
           ],
         ),
       ),
@@ -190,6 +193,8 @@ class _MediaGridState extends State<MediaGrid> with AutomaticKeepAliveClientMixi
     final allMedias = pages.expand((x) => x.items);
     final crossAxisCount = (mediaQuery.size.width / 128).ceil();
     final selection = MediaPickerSelection.of(context);
+    final int maxImages = selection.maxItems;
+
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollInfo) {
         if (canLoadMore && scrollInfo.metrics.pixels + mediaQuery.size.height >= scrollInfo.metrics.maxScrollExtent) {
@@ -210,7 +215,16 @@ class _MediaGridState extends State<MediaGrid> with AutomaticKeepAliveClientMixi
               key: Key(e.id),
               animation: selection,
               builder: (context, _) => InkWell(
-                onTap: () => selection.toggle(e),
+                onTap: () {
+                  if (maxImages > 1) {
+                    selection.toggle(e);
+                  } else {
+                    selection.clear();
+
+                    selection.toggle(e);
+                    Navigator.pop(context, selection.selectedMedias);
+                  }
+                },
                 onLongPress: () => previewImg(e),
                 child: Selectable(
                   isSelected: selection.contains(e),
@@ -265,7 +279,7 @@ class ImgPreviewWidget extends StatelessWidget {
                     frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
                       return AnimatedOpacity(
                         opacity: frame == null ? 0 : 1,
-                        duration: const Duration(milliseconds: 200),
+                        duration: const Duration(milliseconds: 500),
                         curve: Curves.easeOut,
                         child: Hero(tag: tag, child: child),
                       );

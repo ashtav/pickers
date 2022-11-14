@@ -74,25 +74,29 @@ class Pickers {
 
   static Future<List<Media>?> imagePicker(BuildContext context,
       {String? title, int maxImages = 1, MediaPickerLabels? labels, List<Media>? selectedMedias}) async {
-    PermissionStatus mediaStatus = await Permission.photos.status;
+    bool isGranted = false;
 
-    bool isDeniedNiOs = mediaStatus.isDenied && Platform.isIOS;
-    bool isGranted = await Permission.storage.request().isGranted && (mediaStatus.isGranted || await Permission.photos.request().isGranted);
+    if (Platform.isIOS) {
+      PermissionStatus mediaStatus = await Permission.photos.status;
+      isGranted = mediaStatus.isGranted;
 
-    if (isDeniedNiOs) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Not authorized'),
-          content: const Text("This app can't have access to user media gallery. You must update authorizations in app settings."),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Open Settings'),
-              onPressed: () => openAppSettings(),
-            ),
-          ],
-        ),
-      );
+      if (mediaStatus.isDenied) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Not authorized'),
+            content: const Text("This app can't have access to user media gallery. You must update authorizations in app settings."),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Open Settings'),
+                onPressed: () => openAppSettings(),
+              ),
+            ],
+          ),
+        );
+      }
+    } else {
+      isGranted = await Permission.storage.request().isGranted;
     }
 
     List<Media>? result;

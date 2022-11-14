@@ -1,25 +1,19 @@
 import 'package:flutter/widgets.dart';
 
-@immutable
 class MediaPickerLabels {
-  final String collectionsTitle;
-  final String items;
-  final String images;
-  final String albums;
-  final String videos;
-  final String mediaNotAuthorizedAccessTitle;
-  final String mediaNotAuthorizedAccessDescription;
-  final String openSettings;
+  final String? collectionsTitle;
+  final String? items, textConfirm;
+  final String? mediaNotAuthorizedAccessTitle;
+  final String? mediaNotAuthorizedAccessDescription;
+  final String? openSettings;
 
   const MediaPickerLabels({
-    required this.collectionsTitle,
-    required this.images,
-    required this.videos,
-    required this.albums,
-    required this.items,
-    required this.mediaNotAuthorizedAccessTitle,
-    required this.mediaNotAuthorizedAccessDescription,
-    required this.openSettings,
+    this.collectionsTitle,
+    this.items,
+    this.textConfirm,
+    this.mediaNotAuthorizedAccessTitle,
+    this.mediaNotAuthorizedAccessDescription,
+    this.openSettings,
   });
 
   static MediaPickerLabels of(BuildContext context) {
@@ -30,10 +24,8 @@ class MediaPickerLabels {
 
   factory MediaPickerLabels.fallback() => const MediaPickerLabels(
         collectionsTitle: 'Select images',
-        albums: 'Albums',
-        images: 'Photos',
-        videos: 'Videos',
         items: 'item(s)',
+        textConfirm: 'Confirm',
         mediaNotAuthorizedAccessTitle: 'Not authorized',
         mediaNotAuthorizedAccessDescription: "This app can't have access to user media gallery. You must update authorizations in app settings.",
         openSettings: 'Open settings',

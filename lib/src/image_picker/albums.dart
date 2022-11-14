@@ -55,7 +55,7 @@ class MediaAlbums extends StatelessWidget {
       physics: BounceScroll(),
       separatorBuilder: (context, i) => Container(
         // margin: Ei.sym(h: 10),
-        height: 1,
+        height: .7,
         color: theme.textTheme.bodyText2?.color?.withOpacity(0.12),
       ),
       itemBuilder: (context, i) => children[i],
