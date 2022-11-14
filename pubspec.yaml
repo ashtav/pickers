@@ -11,7 +11,7 @@ dependencies:
   camera: ^0.10.0+3
   flutter:
     sdk: flutter
-  flutter_tabler_icons: ^1.1.1
+  flutter_tabler_icons: ^1.1.2
   gallery_saver: ^2.3.2
   google_fonts: ^3.0.1
   media_gallery:

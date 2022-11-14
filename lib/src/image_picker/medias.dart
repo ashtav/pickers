@@ -35,7 +35,7 @@ class _MediaImagesPageState extends State<MediasPage> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           leading: IconButton(
-            icon: const Icon(Ti.chevron_left, color: Colors.black54),
+            icon: const Icon(TablerIcons.chevron_left, color: Colors.black54),
             onPressed: () => Navigator.pop(context),
           ),
           elevation: .5,

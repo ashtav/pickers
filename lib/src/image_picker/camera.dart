@@ -128,7 +128,7 @@ class _CameraScreenState extends State<CameraScreen> {
                           InkW(
                             onTap: () => Navigator.pop(context),
                             child: Iconr(
-                              Ti.chevron_left,
+                              TablerIcons.chevron_left,
                               color: Colors.white,
                               padding: Ei.all(15),
                             ),
@@ -148,7 +148,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                   valueListenable: notifier,
                                   builder: (context, _, __) {
                                     return Iconr(
-                                      notifier.isFlashMode ? Ti.sun_off : Ti.sun,
+                                      notifier.isFlashMode ? TablerIcons.sun_off : TablerIcons.sun,
                                       color: Colors.white,
                                       padding: Ei.all(15),
                                     );
@@ -227,7 +227,7 @@ class CameraCapturePreview extends StatelessWidget {
                           GestureDetector(
                             onTap: () => Navigator.pop(context),
                             child: Iconr(
-                              Ti.refresh,
+                              TablerIcons.refresh,
                               color: Colors.white,
                               padding: Ei.all(15),
                             ),

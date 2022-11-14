@@ -97,7 +97,7 @@ class _MediaCollectionsPageState extends State<MediaCollectionsPage> with Ticker
         appBar: AppBar(
           backgroundColor: Colors.white,
           leading: IconButton(
-            icon: const Icon(Ti.chevron_left, color: Colors.black54),
+            icon: const Icon(TablerIcons.chevron_left, color: Colors.black54),
             onPressed: () => Navigator.pop(context),
           ),
           elevation: .5,
@@ -105,7 +105,7 @@ class _MediaCollectionsPageState extends State<MediaCollectionsPage> with Ticker
             widget.title ?? 'Select Image',
             style: PickerConstant.style.copyWith(fontSize: 20, color: Colors.black54),
           ),
-          actions: [IconButton(onPressed: () => openCamera(), icon: const Icon(Ti.camera, color: Colors.black54))],
+          actions: [IconButton(onPressed: () => openCamera(), icon: const Icon(TablerIcons.camera, color: Colors.black54))],
         ),
         body: Stack(
           children: [
@@ -172,7 +172,7 @@ class NavbarImagePicker extends StatelessWidget {
             animation: selection,
             builder: (context, _) => Intrinsic(
               children: List.generate(2, (i) {
-                List<IconData> icons = [Ti.grid_dots, Ti.layout_list, Ti.photo];
+                List<IconData> icons = [TablerIcons.grid_dots, TablerIcons.layout_list, TablerIcons.photo];
                 int selectionIndex = selection.tabController?.index ?? 0;
 
                 return Expanded(
