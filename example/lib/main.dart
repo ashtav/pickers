@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
             TextButton(
                 onPressed: () async {
                   DateTime? dateTime = await Pickers.datePicker(context);
-                  clog(dateTime);
+                  logg(dateTime);
                 },
                 child: const Text('Show Date Picker')),
             const SizedBox(height: 20),
@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () async {
                   DateTime? dateTime = await Pickers.timePicker(context);
                   String time = (dateTime ?? DateTime.now()).format('HH:mm');
-                  clog(time);
+                  logg(time);
                 },
                 child: const Text('Show Time Picker')),
             const SizedBox(height: 20),

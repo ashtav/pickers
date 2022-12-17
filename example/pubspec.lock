@@ -234,7 +234,7 @@ packages:
       name: mixins
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.9"
+    version: "0.0.10"
   path:
     dependency: transitive
     description:

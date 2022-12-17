@@ -27,7 +27,7 @@ class Pickers {
       bool monthYearOnly = false,
       AlignmentGeometry? alignment}) async {
     if (firstDate != null && lastDate != null && firstDate.isAfter(lastDate)) {
-      clog('[Pickers] - First date must be smaller than last date');
+      logg('[Pickers] - First date must be smaller than last date');
       return null;
     }
 
@@ -57,7 +57,7 @@ class Pickers {
     String confirmLabel = 'Confirm',
   }) async {
     if (firstDate != null && lastDate != null && firstDate.isAfter(lastDate)) {
-      clog('[Pickers] - First date must be smaller than last date');
+      logg('[Pickers] - First date must be smaller than last date');
       return null;
     }
 
