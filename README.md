@@ -11,6 +11,10 @@ dependencies:
             ref: master
 ```
 
+<p>
+<img src="https://storage.igsa.pw/images/pickers/images.png" alt="" width="230px" hspace="30"/> <img src="https://storage.igsa.pw/images/pickers/image_preview.png" alt="" width="230px"/> 
+</p>
+
 ### Example
 
 ```dart
