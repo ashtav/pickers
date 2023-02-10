@@ -201,14 +201,13 @@ class CupertinoDatePickerWidget extends StatelessWidget {
             FutureBuilder(
               future: Future.delayed(const Duration(milliseconds: 0)),
               builder: (context, snapshot) {
-                List<String> types = ['date', 'month', 'year'];
-                if (monthYearOnly) types = ['month', 'year'];
+                List<String> types = monthYearOnly ? ['month', 'year'] : ['date', 'month', 'year'];
 
                 return Center(
                   child: SizedBox(
                     height: context.h * 0.4,
                     child: Intrinsic(
-                      children: List.generate(3, (t) {
+                      children: List.generate(types.length, (t) {
                         String value = types[t];
 
                         return Expanded(
