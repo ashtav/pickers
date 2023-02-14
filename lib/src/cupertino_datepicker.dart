@@ -195,7 +195,7 @@ class CupertinoDatePickerWidget extends StatelessWidget {
     return ScrollConfiguration(
       behavior: NoScrollGlow(),
       child: Container(
-        decoration: BoxDecoration(color: Mixins.hex('f1f1f1')),
+        decoration: BoxDecoration(color: Mixins.hex('f1f1f1'), borderRadius: Br.radius(5)),
         height: context.h * 0.4,
         child: Stack(
           children: [
