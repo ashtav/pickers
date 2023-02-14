@@ -211,7 +211,9 @@ class CupertinoDatePickerWidget extends StatelessWidget {
                         String value = types[t];
 
                         return Expanded(
-                            child: Container(decoration: BoxDecoration(border: Br.only(['l'], except: t == 0)), child: cupertinoPickerWidget(value)));
+                            child: Container(
+                                decoration: BoxDecoration(borderRadius: Br.radius(5), border: Br.only(['l'], except: t == 0)),
+                                child: cupertinoPickerWidget(value)));
                       }),
                     ),
                   ),

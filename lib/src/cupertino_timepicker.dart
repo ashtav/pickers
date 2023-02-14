@@ -174,7 +174,9 @@ class CupertinoTimePickerWidget extends StatelessWidget {
                       children: List.generate(2, (t) {
                         String value = ['hour', 'minute'][t];
                         return Expanded(
-                            child: Container(decoration: BoxDecoration(border: Br.only(['l'], except: t == 0)), child: cupertinoPickerWidget(value)));
+                            child: Container(
+                                decoration: BoxDecoration(borderRadius: Br.radius(5), border: Br.only(['l'], except: t == 0)),
+                                child: cupertinoPickerWidget(value)));
                       }),
                     ),
                   ),
