@@ -195,7 +195,7 @@ class CupertinoDatePickerWidget extends StatelessWidget {
     return ScrollConfiguration(
       behavior: NoScrollGlow(),
       child: Container(
-        decoration: BoxDecoration(color: Mixins.hex('f1f1f1'), borderRadius: Br.radius(5)),
+        decoration: BoxDecoration(color: Mixins.hex('f1f1f1'), borderRadius: Br.radiusOnly({'tl': 5, 'tr': 5})),
         height: context.h > 400 ? context.h * .4 : context.h * .9,
         child: Stack(
           children: [
@@ -216,9 +216,7 @@ class CupertinoDatePickerWidget extends StatelessWidget {
                         String value = types[t];
 
                         return Expanded(
-                            child: Container(
-                                decoration: BoxDecoration(borderRadius: Br.radius(5), border: Br.only(['l'], except: t == 0)),
-                                child: cupertinoPickerWidget(value)));
+                            child: Container(decoration: BoxDecoration(border: Br.only(['l'], except: t == 0)), child: cupertinoPickerWidget(value)));
                       }),
                     ),
                   ),
